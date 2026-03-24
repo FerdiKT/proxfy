@@ -2,6 +2,7 @@ package proxy
 
 import (
 	"bufio"
+	"bytes"
 	"crypto/tls"
 	"fmt"
 	"io"
@@ -29,23 +30,27 @@ var hopByHopHeaders = []string{
 
 // Server is the main MITM proxy server.
 type Server struct {
-	Port      int
-	CertPort  int
-	CertDir   string
-	Filter    string
-	logger    *ui.Logger
-	caManager *ca.Manager
-	transport *http.Transport
+	Port        int
+	CertPort    int
+	CertDir     string
+	Filter      string
+	ShowHeaders bool
+	ShowBody    bool
+	logger      *ui.Logger
+	caManager   *ca.Manager
+	transport   *http.Transport
 }
 
 // NewServer creates a new proxy server.
-func NewServer(port int, certDir, filter string) *Server {
+func NewServer(port int, certDir, filter string, showHeaders, showBody bool) *Server {
 	return &Server{
-		Port:     port,
-		CertPort: port + 1,
-		CertDir:  certDir,
-		Filter:   filter,
-		logger:   ui.NewLogger(filter),
+		Port:        port,
+		CertPort:    port + 1,
+		CertDir:     certDir,
+		Filter:      filter,
+		ShowHeaders: showHeaders,
+		ShowBody:    showBody,
+		logger:      ui.NewLogger(filter),
 		transport: &http.Transport{
 			TLSClientConfig:   &tls.Config{},
 			MaxIdleConns:       200,
@@ -93,6 +98,15 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 // handleHTTP handles plain HTTP proxy requests.
 func (s *Server) handleHTTP(w http.ResponseWriter, r *http.Request) {
+	// Capture request headers before removing hop-by-hop
+	reqHeaders := cloneHeader(r.Header)
+
+	// Capture request body if needed
+	var reqBody string
+	if s.ShowBody && r.Body != nil && s.shouldLog(r.Host) {
+		reqBody, r.Body = captureBody(r.Body)
+	}
+
 	// Remove hop-by-hop headers
 	removeHopByHop(r.Header)
 
@@ -114,6 +128,12 @@ func (s *Server) handleHTTP(w http.ResponseWriter, r *http.Request) {
 	// Remove hop-by-hop headers from response
 	removeHopByHop(resp.Header)
 
+	// Capture response body if needed
+	var respBody string
+	if s.ShowBody && s.shouldLog(r.Host) {
+		respBody, resp.Body = captureBody(resp.Body)
+	}
+
 	// Copy response headers
 	for k, vv := range resp.Header {
 		for _, v := range vv {
@@ -127,6 +147,14 @@ func (s *Server) handleHTTP(w http.ResponseWriter, r *http.Request) {
 
 	if s.shouldLog(r.Host) {
 		s.logger.LogRequest(r.Method, r.URL.String(), resp.StatusCode, n, time.Since(start), "http")
+		if s.ShowHeaders {
+			s.logger.LogHeaders("Request", reqHeaders)
+			s.logger.LogHeaders("Response", resp.Header)
+		}
+		if s.ShowBody {
+			s.logger.LogBody("Request", reqBody)
+			s.logger.LogBody("Response", respBody)
+		}
 	}
 }
 
@@ -198,6 +226,17 @@ func (s *Server) handleConnect(w http.ResponseWriter, r *http.Request) {
 		removeHopByHop(req.Header)
 
 		shouldLog := s.shouldLog(hostName)
+
+		// Capture request headers/body
+		var reqHeaders http.Header
+		var reqBody string
+		if shouldLog && s.ShowHeaders {
+			reqHeaders = cloneHeader(req.Header)
+		}
+		if shouldLog && s.ShowBody && req.Body != nil {
+			reqBody, req.Body = captureBody(req.Body)
+		}
+
 		start := time.Now()
 
 		// Forward to actual target server
@@ -218,6 +257,12 @@ func (s *Server) handleConnect(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		// Capture response body if needed
+		var respBody string
+		if shouldLog && s.ShowBody {
+			respBody, resp.Body = captureBody(resp.Body)
+		}
+
 		// Count body bytes while forwarding
 		var bodySize int64
 		origBody := resp.Body
@@ -231,6 +276,14 @@ func (s *Server) handleConnect(w http.ResponseWriter, r *http.Request) {
 
 		if shouldLog {
 			s.logger.LogRequest(req.Method, req.URL.String(), resp.StatusCode, bodySize, time.Since(start), "https")
+			if s.ShowHeaders {
+				s.logger.LogHeaders("Request", reqHeaders)
+				s.logger.LogHeaders("Response", resp.Header)
+			}
+			if s.ShowBody {
+				s.logger.LogBody("Request", reqBody)
+				s.logger.LogBody("Response", respBody)
+			}
 		}
 
 		if writeErr != nil {
@@ -297,6 +350,29 @@ func removeHopByHop(h http.Header) {
 	for _, header := range hopByHopHeaders {
 		h.Del(header)
 	}
+}
+
+// cloneHeader returns a copy of the header map.
+func cloneHeader(h http.Header) http.Header {
+	c := make(http.Header)
+	for k, vv := range h {
+		c[k] = append([]string(nil), vv...)
+	}
+	return c
+}
+
+// captureBody reads the body into a string (up to 32KB) and returns a new ReadCloser.
+func captureBody(body io.ReadCloser) (string, io.ReadCloser) {
+	const maxCapture = 32 * 1024 // 32KB
+	buf := make([]byte, maxCapture)
+	n, _ := io.ReadAtLeast(body, buf, 1)
+	if n == 0 {
+		return "", body
+	}
+	captured := string(buf[:n])
+	// Reconstruct body: captured bytes + remaining unread data
+	newBody := io.NopCloser(io.MultiReader(bytes.NewReader(buf[:n]), body))
+	return captured, newBody
 }
 
 // getLocalIP returns the primary local IP address.

@@ -1,7 +1,10 @@
 package ui
 
 import (
+	"encoding/json"
 	"fmt"
+	"net/http"
+	"sort"
 	"strings"
 	"time"
 )
@@ -115,6 +118,111 @@ func (l *Logger) Info(format string, args ...interface{}) {
 func (l *Logger) Warn(format string, args ...interface{}) {
 	msg := fmt.Sprintf(format, args...)
 	fmt.Printf("  %s%s⚠ %s%s\n", yellow, bold, msg, reset)
+}
+
+// sensitiveHeaders are highlighted to make tokens easy to spot.
+var sensitiveHeaders = map[string]bool{
+	"Authorization":    true,
+	"Cookie":           true,
+	"Set-Cookie":       true,
+	"X-Access-Token":   true,
+	"X-Auth-Token":     true,
+	"X-Api-Key":        true,
+	"X-Csrf-Token":     true,
+	"Proxy-Authorization": true,
+}
+
+// fullValueHeaders are printed without truncation so tokens can be extracted.
+var fullValueHeaders = map[string]bool{
+	"Authorization":       true,
+	"Proxy-Authorization": true,
+	"X-Access-Token":      true,
+	"X-Auth-Token":        true,
+}
+
+// LogHeaders prints HTTP headers in a readable format.
+func (l *Logger) LogHeaders(label string, headers http.Header) {
+	if len(headers) == 0 {
+		return
+	}
+
+	labelColor := cyan
+	if label == "Response" {
+		labelColor = magenta
+	}
+
+	fmt.Printf("     %s%s── %s Headers ──%s\n", dim, labelColor, label, reset)
+
+	// Sort header keys for consistent output
+	keys := make([]string, 0, len(headers))
+	for k := range headers {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	for _, k := range keys {
+		for _, v := range headers[k] {
+			nameColor := dim
+			valColor := white
+			marker := " "
+
+			if sensitiveHeaders[k] {
+				nameColor = yellow + bold
+				valColor = yellow
+				marker = "★"
+			}
+
+				// Truncate very long values except token-bearing headers.
+				displayVal := v
+				if len(displayVal) > 120 && !fullValueHeaders[k] {
+					displayVal = displayVal[:117] + "..."
+				}
+
+			fmt.Printf("     %s%s %s%s%s: %s%s%s\n", dim, marker, nameColor, k, reset, valColor, displayVal, reset)
+		}
+	}
+	fmt.Println()
+}
+
+// LogBody prints the request/response body, with JSON pretty-printing.
+func (l *Logger) LogBody(label string, body string) {
+	if body == "" {
+		return
+	}
+
+	labelColor := cyan
+	if label == "Response" {
+		labelColor = magenta
+	}
+
+	fmt.Printf("     %s%s── %s Body ──%s\n", dim, labelColor, label, reset)
+
+	// Try JSON pretty-printing
+	var jsonObj interface{}
+	if json.Unmarshal([]byte(body), &jsonObj) == nil {
+		pretty, err := json.MarshalIndent(jsonObj, "     ", "  ")
+		if err == nil {
+			body = string(pretty)
+		}
+	}
+
+	// Truncate if too long
+	const maxDisplay = 2048
+	truncated := false
+	if len(body) > maxDisplay {
+		body = body[:maxDisplay]
+		truncated = true
+	}
+
+	// Print each line indented
+	for _, line := range strings.Split(body, "\n") {
+		fmt.Printf("     %s%s%s\n", dim, line, reset)
+	}
+
+	if truncated {
+		fmt.Printf("     %s... (truncated)%s\n", yellow, reset)
+	}
+	fmt.Println()
 }
 
 // CertInfo prints CA certificate information.

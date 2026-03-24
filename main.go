@@ -46,6 +46,8 @@ func cmdStart() {
 	fs := flag.NewFlagSet("start", flag.ExitOnError)
 	port := fs.Int("port", 8080, "Proxy server port")
 	filter := fs.String("filter", "", "Only log requests matching this domain (e.g. api.example.com)")
+	showHeaders := fs.Bool("headers", false, "Show request/response headers")
+	showBody := fs.Bool("body", false, "Show request/response body")
 	fs.Usage = func() {
 		fmt.Println("Usage: proxfy start [options]")
 		fmt.Println()
@@ -56,7 +58,7 @@ func cmdStart() {
 
 	certDir := getCertDir()
 
-	server := proxy.NewServer(*port, certDir, *filter)
+	server := proxy.NewServer(*port, certDir, *filter, *showHeaders, *showBody)
 	if err := server.Start(); err != nil {
 		fmt.Fprintf(os.Stderr, "\n  ✗ Error: %v\n\n", err)
 		os.Exit(1)
