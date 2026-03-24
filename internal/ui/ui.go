@@ -56,20 +56,20 @@ func (l *Logger) Banner(ip string, proxyPort, certPort int) {
 	}
 
 	fmt.Println()
-	fmt.Printf("  %s📱 iPhone Kurulumu:%s\n", bold, reset)
+	fmt.Printf("  %s📱 iPhone Setup:%s\n", bold, reset)
 	fmt.Println()
 	fmt.Printf("  %s1%s  Wi-Fi → HTTP Proxy → Manual\n", yellow+bold, reset)
 	fmt.Printf("     Server: %s%s%s  Port: %s%d%s\n", green, ip, reset, green, proxyPort, reset)
 	fmt.Println()
-	fmt.Printf("  %s2%s  Safari'de aç → sertifikayı indir:\n", yellow+bold, reset)
+	fmt.Printf("  %s2%s  Open in Safari → download certificate:\n", yellow+bold, reset)
 	fmt.Printf("     %s%shttp://%s:%d%s\n", bold, cyan, ip, certPort, reset)
 	fmt.Println()
-	fmt.Printf("  %s3%s  Ayarlar → Genel → VPN ve Cihaz Yönetimi → Sertifikayı Yükle\n", yellow+bold, reset)
+	fmt.Printf("  %s3%s  Settings → General → VPN & Device Management → Install Certificate\n", yellow+bold, reset)
 	fmt.Println()
-	fmt.Printf("  %s4%s  Ayarlar → Genel → Hakkında → Sertifika Güven Ayarları → Etkinleştir\n", yellow+bold, reset)
+	fmt.Printf("  %s4%s  Settings → General → About → Certificate Trust Settings → Enable\n", yellow+bold, reset)
 	fmt.Println()
 	fmt.Printf("  %s━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━%s\n", dim, reset)
-	fmt.Printf("  %sDurdurmak için Ctrl+C%s\n", dim, reset)
+	fmt.Printf("  %sPress Ctrl+C to stop%s\n", dim, reset)
 	fmt.Println()
 }
 
@@ -234,7 +234,7 @@ func (l *Logger) CertInfo(certPath, fingerprint string) {
 	fmt.Printf("  %sPath%s         %s%s%s\n", gray, reset, white, certPath, reset)
 	fmt.Printf("  %sFingerprint%s  %s%s%s\n", gray, reset, dim, truncateFingerprint(fingerprint), reset)
 	fmt.Println()
-	fmt.Printf("  %smacOS'e yüklemek için:%s\n", bold, reset)
+	fmt.Printf("  %sTo install on macOS:%s\n", bold, reset)
 	fmt.Printf("  %s$ sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain %s%s\n", dim, certPath, reset)
 	fmt.Println()
 }

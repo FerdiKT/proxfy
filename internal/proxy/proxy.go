@@ -309,13 +309,13 @@ func (s *Server) serveCertDownload(ip string) {
 			w.Header().Set("Content-Disposition", `attachment; filename="proxfy-ca.crt"`)
 			w.Header().Set("Content-Length", fmt.Sprintf("%d", len(certPEM)))
 			w.Write(certPEM)
-			s.logger.Info("📱 CA sertifikası indirildi: %s", r.RemoteAddr)
+			s.logger.Info("📱 CA certificate downloaded: %s", r.RemoteAddr)
 			return
 		}
 
 		// Landing page
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		fmt.Fprintf(w, certDownloadPage, ip, s.CertPort)
+		fmt.Fprint(w, certDownloadPage)
 	})
 
 	server := &http.Server{
@@ -402,11 +402,11 @@ func getLocalIP() string {
 
 // certDownloadPage is the HTML template for the cert download page.
 const certDownloadPage = `<!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Proxfy — Sertifika Yükle</title>
+    <title>Proxfy — Install Certificate</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -488,20 +488,20 @@ const certDownloadPage = `<!DOCTYPE html>
     <div class="card">
         <div class="logo">⚡</div>
         <h1>Proxfy</h1>
-        <p class="subtitle">HTTPS trafiğini okuyabilmek için<br>CA sertifikasını yükleyin</p>
+        <p class="subtitle">Install the CA certificate<br>to intercept HTTPS traffic</p>
 
-        <a href="/download" class="download-btn">📥 Sertifikayı İndir</a>
+        <a href="/download" class="download-btn">📥 Download Certificate</a>
 
         <div class="steps">
-            <p><span class="num">1</span>Yukarıdaki butona tıklayın</p>
-            <p><span class="num">2</span>Ayarlar → Genel → VPN ve Cihaz Yönetimi</p>
-            <p><span class="num">3</span>Proxfy CA profilini yükleyin</p>
-            <p><span class="num">4</span>Ayarlar → Genel → Hakkında → Sertifika Güven Ayarları</p>
-            <p><span class="num">5</span>Proxfy CA'yı etkinleştirin</p>
+            <p><span class="num">1</span>Tap the download button above</p>
+            <p><span class="num">2</span>Settings → General → VPN & Device Management</p>
+            <p><span class="num">3</span>Install the Proxfy CA profile</p>
+            <p><span class="num">4</span>Settings → General → About → Certificate Trust Settings</p>
+            <p><span class="num">5</span>Enable trust for Proxfy CA</p>
         </div>
 
         <div class="warn">
-            ⚠️ Bu sertifika yalnızca geliştirme amaçlıdır. İşiniz bittiğinde sertifikayı kaldırmanız önerilir.
+            ⚠️ This certificate is for development purposes only. It's recommended to remove it when done.
         </div>
     </div>
 </body>

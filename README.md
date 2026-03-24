@@ -1,10 +1,24 @@
 <p align="center">
-  <img src="assets/hero-banner.svg" alt="Proxfy — CLI HTTPS Proxy" width="100%">
+  <img src="assets/hero-banner.svg" alt="Proxfy — CLI HTTPS Proxy" width="820" />
 </p>
 
-# proxfy
+<h1 align="center">proxfy</h1>
 
-A powerful CLI HTTPS proxy for mobile debugging · MITM interception · Single binary · Zero dependencies
+<p align="center">
+  <strong>A powerful CLI HTTPS proxy for mobile debugging</strong><br />
+  MITM interception · Single binary · Zero dependencies
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/status-stable-brightgreen?style=flat-square" alt="Stable" />
+  <a href="#-quickstart"><img src="https://img.shields.io/badge/quickstart-2_min-brightgreen?style=flat-square" alt="Quickstart" /></a>
+  <a href="#-installation"><img src="https://img.shields.io/badge/go_install-ready-00ADD8?style=flat-square&logo=go&logoColor=white" alt="Go Install" /></a>
+  <img src="https://img.shields.io/badge/dependencies-0-blue?style=flat-square" alt="Zero Dependencies" />
+  <img src="https://img.shields.io/badge/iOS_proxy-ready-purple?style=flat-square" alt="iOS Proxy" />
+  <a href="#-license"><img src="https://img.shields.io/badge/license-MIT-lightgrey?style=flat-square" alt="License" /></a>
+</p>
+
+---
 
 ## ✨ Why Proxfy?
 

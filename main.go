@@ -98,8 +98,8 @@ func cmdCert() {
 			os.Exit(1)
 		}
 		certPath := manager.CACertPath()
-		fmt.Println("  CA sertifikası macOS trust store'a yükleniyor...")
-		fmt.Println("  (sudo şifreniz sorulabilir)")
+		fmt.Println("  Installing CA certificate to macOS trust store...")
+		fmt.Println("  (you may be prompted for your sudo password)")
 		fmt.Println()
 
 		cmd := exec.Command("sudo", "security", "add-trusted-cert",
@@ -112,10 +112,10 @@ func cmdCert() {
 		cmd.Stderr = os.Stderr
 
 		if err := cmd.Run(); err != nil {
-			logger.Error("Sertifika yüklenemedi: %v", err)
+			logger.Error("Failed to install certificate: %v", err)
 			os.Exit(1)
 		}
-		logger.Info("CA sertifikası başarıyla yüklendi!")
+		logger.Info("CA certificate successfully installed!")
 		return
 	}
 
@@ -125,7 +125,7 @@ func cmdCert() {
 			os.Exit(1)
 		}
 		certPath := manager.CACertPath()
-		fmt.Println("  CA sertifikası trust store'dan kaldırılıyor...")
+		fmt.Println("  Removing CA certificate from trust store...")
 
 		cmd := exec.Command("sudo", "security", "remove-trusted-cert",
 			"-d", certPath,
@@ -135,10 +135,10 @@ func cmdCert() {
 		cmd.Stderr = os.Stderr
 
 		if err := cmd.Run(); err != nil {
-			logger.Error("Sertifika kaldırılamadı: %v", err)
+			logger.Error("Failed to remove certificate: %v", err)
 			os.Exit(1)
 		}
-		logger.Info("CA sertifikası başarıyla kaldırıldı!")
+		logger.Info("CA certificate successfully removed!")
 		return
 	}
 
