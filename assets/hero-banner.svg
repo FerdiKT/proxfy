@@ -1,0 +1,214 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" fill="none">
+  <defs>
+    <!-- Main background gradient -->
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="400" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0a0e1a"/>
+      <stop offset="50%" stop-color="#0d1117"/>
+      <stop offset="100%" stop-color="#0a1628"/>
+    </linearGradient>
+    <!-- Accent glows -->
+    <radialGradient id="glow1" cx="850" cy="180" r="350" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#00d4aa" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#00d4aa" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow2" cx="200" cy="320" r="300" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#06b6d4" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Terminal background -->
+    <linearGradient id="termBg" x1="660" y1="40" x2="660" y2="370" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1a1f2e"/>
+      <stop offset="100%" stop-color="#141820"/>
+    </linearGradient>
+    <!-- Terminal border -->
+    <linearGradient id="termBorder" x1="660" y1="40" x2="660" y2="370" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#2d3548"/>
+      <stop offset="100%" stop-color="#1e2433"/>
+    </linearGradient>
+    <!-- Grid pattern -->
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#ffffff" stroke-opacity="0.02" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="400" fill="url(#bg)"/>
+  <rect width="1200" height="400" fill="url(#grid)"/>
+  <rect width="1200" height="400" fill="url(#glow1)"/>
+  <rect width="1200" height="400" fill="url(#glow2)"/>
+
+  <!-- Decorative dots -->
+  <circle cx="120" cy="70" r="1.5" fill="#00d4aa" opacity="0.3"/>
+  <circle cx="200" cy="45" r="1" fill="#06b6d4" opacity="0.25"/>
+  <circle cx="1080" cy="340" r="1.5" fill="#00d4aa" opacity="0.2"/>
+  <circle cx="1050" cy="55" r="1" fill="#22d3ee" opacity="0.15"/>
+  <circle cx="60" cy="310" r="1" fill="#2dd4bf" opacity="0.2"/>
+
+  <!-- Left side: Branding -->
+  <g transform="translate(80, 100)">
+    <!-- Icon -->
+    <rect x="0" y="0" width="52" height="52" rx="12" fill="#00d4aa" opacity="0.12"/>
+    <text x="26" y="36" font-family="SF Mono, Menlo, Consolas, monospace" font-size="28" fill="#00d4aa" text-anchor="middle" font-weight="600">⚡</text>
+
+    <!-- Title -->
+    <text x="66" y="24" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="36" fill="#f8fafc" font-weight="700" letter-spacing="-0.5">proxfy</text>
+    <text x="66" y="46" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" fill="#64748b" font-weight="500" letter-spacing="3">CLI</text>
+  </g>
+
+  <!-- Tagline -->
+  <text x="80" y="204" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="17" fill="#94a3b8" font-weight="400">
+    HTTPS traffic inspection from your terminal.
+  </text>
+  <text x="80" y="230" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="17" fill="#94a3b8" font-weight="400">
+    iPhone ready. Zero dependencies. Single binary.
+  </text>
+
+  <!-- Feature pills -->
+  <g transform="translate(80, 260)">
+    <!-- Pill 1 -->
+    <rect x="0" y="0" width="64" height="28" rx="14" fill="#00d4aa" opacity="0.1" stroke="#00d4aa" stroke-opacity="0.2" stroke-width="1"/>
+    <text x="32" y="18" font-family="SF Mono, Menlo, monospace" font-size="11" fill="#00d4aa" text-anchor="middle" font-weight="500">MITM</text>
+    <!-- Pill 2 -->
+    <rect x="74" y="0" width="90" height="28" rx="14" fill="#06b6d4" opacity="0.1" stroke="#06b6d4" stroke-opacity="0.2" stroke-width="1"/>
+    <text x="119" y="18" font-family="SF Mono, Menlo, monospace" font-size="11" fill="#22d3ee" text-anchor="middle" font-weight="500">--headers</text>
+    <!-- Pill 3 -->
+    <rect x="174" y="0" width="72" height="28" rx="14" fill="#a78bfa" opacity="0.1" stroke="#a78bfa" stroke-opacity="0.2" stroke-width="1"/>
+    <text x="210" y="18" font-family="SF Mono, Menlo, monospace" font-size="11" fill="#a78bfa" text-anchor="middle" font-weight="500">--body</text>
+    <!-- Pill 4 -->
+    <rect x="256" y="0" width="80" height="28" rx="14" fill="#fbbf24" opacity="0.1" stroke="#fbbf24" stroke-opacity="0.2" stroke-width="1"/>
+    <text x="296" y="18" font-family="SF Mono, Menlo, monospace" font-size="11" fill="#fbbf24" text-anchor="middle" font-weight="500">--filter</text>
+  </g>
+
+  <!-- Decorative line -->
+  <line x1="80" y1="316" x2="420" y2="316" stroke="#1e293b" stroke-width="1"/>
+  <text x="80" y="344" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" fill="#475569">github.com/ferdikt/proxfy</text>
+
+  <!-- Right side: Terminal window -->
+  <g transform="translate(480, 20)">
+    <!-- Terminal outer frame -->
+    <rect x="0" y="0" width="680" height="365" rx="12" fill="url(#termBorder)"/>
+    <rect x="1" y="1" width="678" height="363" rx="11" fill="url(#termBg)"/>
+
+    <!-- Title bar -->
+    <rect x="1" y="1" width="678" height="36" rx="11" fill="#1e2433"/>
+    <rect x="1" y="26" width="678" height="11" fill="#1e2433"/>
+    <!-- Traffic lights -->
+    <circle cx="22" cy="19" r="6" fill="#ff5f57"/>
+    <circle cx="42" cy="19" r="6" fill="#febc2e"/>
+    <circle cx="62" cy="19" r="6" fill="#28c840"/>
+    <!-- Tab title -->
+    <text x="340" y="23" font-family="SF Mono, Menlo, Consolas, monospace" font-size="12" fill="#64748b" text-anchor="middle">proxfy — zsh</text>
+    <!-- Separator -->
+    <line x1="1" y1="37" x2="679" y2="37" stroke="#2d3548" stroke-width="0.5"/>
+
+    <!-- Terminal content -->
+    <g transform="translate(20, 56)">
+      <!-- Line 1: Command -->
+      <text y="0" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13">
+        <tspan fill="#6b7280">$</tspan>
+        <tspan fill="#e2e8f0"> proxfy start </tspan>
+        <tspan fill="#fbbf24">--headers</tspan>
+        <tspan fill="#e2e8f0"> </tspan>
+        <tspan fill="#fbbf24">--filter</tspan>
+        <tspan fill="#e2e8f0"> api.myapp.com</tspan>
+      </text>
+
+      <!-- Line 2-3: Banner -->
+      <text y="26" font-family="SF Mono, Menlo, Consolas, monospace" font-size="12.5">
+        <tspan fill="#00d4aa">⚡</tspan>
+        <tspan fill="#00d4aa" font-weight="600"> Proxfy</tspan>
+        <tspan fill="#475569"> v0.1.0</tspan>
+      </text>
+      <text y="44" font-family="SF Mono, Menlo, Consolas, monospace" font-size="12.5">
+        <tspan fill="#64748b">Proxy</tspan>
+        <tspan fill="#94a3b8"> 192.168.1.13:8080</tspan>
+        <tspan fill="#475569">  ·  </tspan>
+        <tspan fill="#64748b">Filter</tspan>
+        <tspan fill="#fbbf24"> api.myapp.com</tspan>
+      </text>
+
+      <!-- Blank -->
+
+      <!-- Line 5: HTTPS request -->
+      <text y="76" font-family="SF Mono, Menlo, Consolas, monospace" font-size="12.5">
+        <tspan fill="#475569">10:24:01</tspan>
+        <tspan fill="#fbbf24" font-weight="600"> POST   </tspan>
+        <tspan fill="#34d399">🔒</tspan>
+        <tspan fill="#e2e8f0"> api.myapp.com/v2/auth/login</tspan>
+        <tspan fill="#34d399"> 200</tspan>
+        <tspan fill="#475569">  1.2 KB  326ms</tspan>
+      </text>
+
+      <!-- Request Headers -->
+      <text y="98" font-family="SF Mono, Menlo, Consolas, monospace" font-size="11.5">
+        <tspan fill="#475569">   ── </tspan>
+        <tspan fill="#06b6d4">Request Headers</tspan>
+        <tspan fill="#475569"> ──</tspan>
+      </text>
+      <text y="114" font-family="SF Mono, Menlo, Consolas, monospace" font-size="11.5" xml:space="preserve">
+        <tspan fill="#475569">     Content-Type: </tspan><tspan fill="#94a3b8">application/json</tspan>
+      </text>
+      <text y="130" font-family="SF Mono, Menlo, Consolas, monospace" font-size="11.5" xml:space="preserve">
+        <tspan fill="#fbbf24">   ★ Authorization: </tspan><tspan fill="#fbbf24">Bearer eyJhbGciOiJSUzI1NiJ9.eyJ1c2Vy...</tspan>
+      </text>
+
+      <!-- Response Headers -->
+      <text y="154" font-family="SF Mono, Menlo, Consolas, monospace" font-size="11.5">
+        <tspan fill="#475569">   ── </tspan>
+        <tspan fill="#c084fc">Response Headers</tspan>
+        <tspan fill="#475569"> ──</tspan>
+      </text>
+      <text y="170" font-family="SF Mono, Menlo, Consolas, monospace" font-size="11.5" xml:space="preserve">
+        <tspan fill="#fbbf24">   ★ Set-Cookie: </tspan><tspan fill="#fbbf24">session=abc123; Path=/; HttpOnly</tspan>
+      </text>
+
+      <!-- Blank line -->
+
+      <!-- Line: GET request -->
+      <text y="200" font-family="SF Mono, Menlo, Consolas, monospace" font-size="12.5">
+        <tspan fill="#475569">10:24:02</tspan>
+        <tspan fill="#34d399" font-weight="600"> GET    </tspan>
+        <tspan fill="#34d399">🔒</tspan>
+        <tspan fill="#e2e8f0"> api.myapp.com/v2/user/profile</tspan>
+        <tspan fill="#34d399"> 200</tspan>
+        <tspan fill="#475569">  3.8 KB  142ms</tspan>
+      </text>
+
+      <!-- Line: Another request -->
+      <text y="220" font-family="SF Mono, Menlo, Consolas, monospace" font-size="12.5">
+        <tspan fill="#475569">10:24:03</tspan>
+        <tspan fill="#34d399" font-weight="600"> GET    </tspan>
+        <tspan fill="#34d399">🔒</tspan>
+        <tspan fill="#e2e8f0"> api.myapp.com/v2/feed</tspan>
+        <tspan fill="#34d399"> 200</tspan>
+        <tspan fill="#475569"> 12.4 KB   89ms</tspan>
+      </text>
+
+      <!-- Line: 404 -->
+      <text y="240" font-family="SF Mono, Menlo, Consolas, monospace" font-size="12.5">
+        <tspan fill="#475569">10:24:05</tspan>
+        <tspan fill="#ef4444" font-weight="600"> DELETE </tspan>
+        <tspan fill="#34d399">🔒</tspan>
+        <tspan fill="#e2e8f0"> api.myapp.com/v2/cache</tspan>
+        <tspan fill="#fbbf24"> 404</tspan>
+        <tspan fill="#475569">    82 B   34ms</tspan>
+      </text>
+
+      <!-- Line: PUT -->
+      <text y="260" font-family="SF Mono, Menlo, Consolas, monospace" font-size="12.5">
+        <tspan fill="#475569">10:24:06</tspan>
+        <tspan fill="#60a5fa" font-weight="600"> PUT    </tspan>
+        <tspan fill="#34d399">🔒</tspan>
+        <tspan fill="#e2e8f0"> api.myapp.com/v2/settings</tspan>
+        <tspan fill="#34d399"> 200</tspan>
+        <tspan fill="#475569">   256 B  201ms</tspan>
+      </text>
+
+      <!-- Cursor -->
+      <text y="290" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13">
+        <tspan fill="#6b7280">$</tspan>
+        <tspan fill="#00d4aa">█</tspan>
+      </text>
+    </g>
+  </g>
+</svg>

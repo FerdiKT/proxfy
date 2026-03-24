@@ -1,140 +1,206 @@
-# ⚡ Proxfy
+<p align="center">
+  <img src="assets/hero-banner.svg" alt="Proxfy — CLI HTTPS Proxy" width="100%">
+</p>
 
-CLI-based HTTPS proxy for mobile debugging. A lightweight alternative to Charles Proxy and Proxyman — no GUI needed.
+# proxfy
 
-## Features
+A powerful CLI HTTPS proxy for mobile debugging · MITM interception · Single binary · Zero dependencies
 
-- 🔒 **HTTPS MITM Interception** — Decrypt and inspect HTTPS traffic
-- 📱 **iPhone/iPad Ready** — Built-in CA cert server for easy mobile setup
-- 🎨 **Color-coded Logs** — Method, status, size, and duration at a glance
-- 🔍 **Domain Filtering** — Focus on specific APIs with `--filter`
-- 🚀 **Zero Dependencies** — Single binary, pure Go standard library
-- ⚡ **Fast** — ECDSA P-256 certs, goroutine-per-connection
+## ✨ Why Proxfy?
 
-## Install
+Stop paying for GUI proxy tools. Start inspecting traffic from your terminal.
+
+| | Proxfy | Charles Proxy | Proxyman |
+|---|---|---|---|
+| **Price** | Free & open-source | $50 | $69/yr |
+| **Install** | `brew install` | Download + license | Download + license |
+| **GUI Required** | No — pure CLI | Yes | Yes |
+| **Binary Size** | ~6 MB | ~80 MB | ~60 MB |
+| **Dependencies** | Zero | Java Runtime | None |
+| **CI/SSH Friendly** | ✅ | ❌ | ❌ |
+| **iPhone Setup** | Built-in cert server | Manual | Manual |
+
+## 📦 Installation
 
 ```bash
-# Homebrew (macOS & Linux)
-brew install ferdikt/tap/proxfy
+brew tap FerdiKT/tap
+brew install proxfy
+```
 
-# Or with Go
+```bash
 go install github.com/ferdikt/proxfy@latest
+```
 
-# Or build from source
-git clone https://github.com/ferdikt/proxfy.git
+```bash
+git clone https://github.com/FerdiKT/proxfy.git
 cd proxfy
 make install
 ```
 
-## Quick Start
+## 🚀 Quickstart
+
+Get up and running in 2 minutes.
+
+### 1️⃣ Start the proxy
 
 ```bash
-# 1. Start the proxy
 proxfy start
-
-# 2. Install CA cert on macOS (optional, for local testing)
-proxfy cert --install
-
-# 3. Configure your iPhone (see below)
 ```
 
-## iPhone Setup
+### 2️⃣ Connect your iPhone
 
-1. **Start Proxfy** on your Mac:
-   ```bash
-   proxfy start
-   ```
+Open **Settings → Wi-Fi → (your network) → Configure Proxy → Manual** and enter the IP and port shown in the terminal.
 
-2. **Configure iPhone Wi-Fi proxy:**
-   - Settings → Wi-Fi → (your network) → Configure Proxy → Manual
-   - Server: `<your Mac's IP>` (shown in Proxfy output)
-   - Port: `8080`
+### 3️⃣ Install the CA certificate
 
-3. **Install CA certificate:**
-   - Open Safari on iPhone
-   - Navigate to `http://<your Mac's IP>:8081`
-   - Tap "Download Certificate"
+Open **Safari** on your iPhone and navigate to the cert server URL shown in the terminal (e.g. `http://192.168.1.x:8081`). Then:
 
-4. **Trust the certificate:**
-   - Settings → General → VPN & Device Management → Install Proxfy CA
-   - Settings → General → About → Certificate Trust Settings → Enable Proxfy CA
+- **Settings → General → VPN & Device Management** → Install Proxfy CA
+- **Settings → General → About → Certificate Trust Settings** → Enable Proxfy CA
 
-## Usage
+### 4️⃣ Inspect traffic
+
+All HTTP/HTTPS traffic from your iPhone now flows through Proxfy and is logged in your terminal.
+
+```bash
+# See full request/response headers
+proxfy start --headers
+
+# See headers + body (with JSON pretty-printing)
+proxfy start --headers --body
+
+# Focus on a specific API
+proxfy start --headers --filter api.myapp.com
+```
+
+## 🗺️ Command Reference
+
+### `proxfy start`
+
+Start the MITM proxy server.
 
 ```
-proxfy <command> [options]
+proxfy start [options]
 
-COMMANDS
-  start       Start the proxy server
-  cert        Manage CA certificate
-  version     Print version info
-  help        Show this help
-
-START OPTIONS
+Options:
   --port      Proxy port (default: 8080)
-  --filter    Only log requests matching domain
+  --filter    Only log requests matching this domain
+  --headers   Show request/response headers
+  --body      Show request/response body
+```
 
-CERT OPTIONS
+### `proxfy cert`
+
+Manage the CA certificate.
+
+```
+proxfy cert [options]
+
+Options:
   --path      Print CA cert file path
-  --install   Install CA cert to macOS trust store
-  --remove    Remove CA cert from macOS trust store
+  --install   Install CA cert to macOS trust store (requires sudo)
+  --remove    Remove CA cert from macOS trust store (requires sudo)
 ```
 
-## Examples
+### `proxfy version`
 
 ```bash
-# Start on default port
-proxfy start
-
-# Start on custom port
-proxfy start --port 9090
-
-# Only log API requests
-proxfy start --filter api.myapp.com
-
-# Show CA cert info
-proxfy cert
-
-# Install CA to macOS keychain
-proxfy cert --install
+$ proxfy version
+proxfy v0.1.0 (darwin/arm64)
 ```
 
-## How It Works
+## 🔐 MITM Flow
 
 ```
-iPhone                    Proxfy                     Server
-  │                         │                          │
-  │──── CONNECT host:443 ──→│                          │
-  │←── 200 Established ─────│                          │
-  │                         │                          │
-  │◄═══ TLS (fake cert) ═══►│◄═══ TLS (real cert) ═══►│
-  │                         │                          │
-  │──── GET /api/data ──────→│──── GET /api/data ──────→│
-  │←── 200 {json...} ───────│←── 200 {json...} ───────│
-  │                         │                          │
-  │       (logged & displayed in terminal)             │
+iPhone                     Proxfy                      Server
+  │                          │                           │
+  │── CONNECT host:443 ─────→│                           │
+  │←── 200 Established ──────│                           │
+  │                          │                           │
+  │◄══ TLS (Proxfy cert) ══►│◄══ TLS (real cert) ══════►│
+  │                          │                           │
+  │── GET /api/data ─────────→│── GET /api/data ─────────→│
+  │←── 200 {json} ───────────│←── 200 {json} ────────────│
+  │                          │                           │
+  │    (decrypted, logged, and displayed in terminal)    │
 ```
 
-1. iPhone sends a `CONNECT` request to Proxfy
-2. Proxfy generates a TLS certificate for the target domain (signed by its CA)
-3. Proxfy does a TLS handshake with iPhone using the fake cert
-4. Proxfy connects to the real server with a real TLS connection
-5. All traffic flows through Proxfy and is logged in the terminal
+1. iPhone sends `CONNECT` to establish HTTPS tunnel
+2. Proxfy generates a TLS certificate for the target host (signed by its CA)
+3. Client-side TLS handshake using the Proxfy-signed certificate
+4. Server-side TLS handshake using the real certificate
+5. All requests are decrypted, forwarded, logged, and re-encrypted
 
-## Cleanup
+## 🔍 Header Inspection
 
-When done debugging:
+Sensitive headers are automatically highlighted with `★` so you can spot tokens instantly:
+
+```
+10:24:01 POST   🔒 api.myapp.com/v2/auth/login     200  1.2 KB  326ms
+     ── Request Headers ──
+       Content-Type: application/json
+     ★ Authorization: Bearer eyJhbGciOiJSUzI1NiJ9.eyJ1c2VyX2lk...
+       User-Agent: MyApp/3.2.1
+
+     ── Response Headers ──
+       Content-Type: application/json
+     ★ Set-Cookie: session=abc123; Path=/; HttpOnly
+```
+
+Highlighted headers: `Authorization` · `Cookie` · `Set-Cookie` · `X-Access-Token` · `X-Auth-Token` · `X-Api-Key` · `X-Csrf-Token`
+
+Token-bearing headers (`Authorization`, `X-Access-Token`, `X-Auth-Token`) are **never truncated** so you can copy the full value.
+
+## ⚙️ Configuration
+
+| Item | Location |
+|------|----------|
+| CA Certificate | `~/.proxfy/proxfy-ca.pem` |
+| CA Private Key | `~/.proxfy/proxfy-ca-key.pem` |
+| Proxy Port | `--port` flag (default: `8080`) |
+| Cert Server | Automatically on `port + 1` |
+
+## 🧹 Cleanup
+
+When done debugging, remove the CA certificate:
 
 ```bash
-# Remove CA from macOS trust store
+# Remove from macOS trust store
 proxfy cert --remove
 
-# Remove CA certificate files
+# Delete certificate files
 rm -rf ~/.proxfy
 
-# On iPhone: Settings → General → VPN & Device Management → Remove Proxfy CA
+# On iPhone:
+# Settings → General → VPN & Device Management → Remove Proxfy CA
 ```
 
-## License
+## 🏗️ Architecture
+
+```
+proxfy
+├── main.go                 CLI entry point, subcommand routing
+└── internal/
+    ├── ca/ca.go             CA cert management + per-host cert generation
+    ├── proxy/proxy.go       HTTP/HTTPS MITM proxy + cert download server
+    └── ui/ui.go             Color-coded terminal output (ANSI)
+```
+
+**Zero external dependencies** — built entirely on Go standard library.
+
+## 🤝 Contributing
+
+1. Fork the repo and create a feature branch
+2. Make your changes
+3. Run checks: `go vet ./...`
+4. Submit a PR
+
+## 📄 License
 
 MIT
+
+---
+
+<p align="center">
+  <sub>Built with ❤️ for mobile developers who prefer the terminal</sub>
+</p>
